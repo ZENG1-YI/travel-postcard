@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e9">
+  <title>数字照片墙 · 旅行明信片</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="wall.html" aria-label="进入数字照片墙"><span class="brand-mark">墙</span><span>数字照片墙</span></a>
+    <p>把一程风景，寄给此刻。</p>
+    <button class="ghost-btn" id="undoBtn" type="button" disabled><span aria-hidden="true">↶</span> 撤销</button>
+  </header>
+
+  <main class="app-shell">
+    <aside class="controls" aria-label="明信片编辑工具">
+      <div class="intro">
+        <p class="eyebrow">POSTCARD MAKER</p>
+        <h1>制作旅行明信片</h1>
+        <p>选一个版式，放进旅途里最喜欢的一帧。</p>
+      </div>
+
+      <nav class="step-tabs" aria-label="编辑步骤">
+        <button class="step-tab active" type="button" data-panel="templatePanel"><span>01</span>选择模板</button>
+        <button class="step-tab" type="button" data-panel="stampPanel"><span>02</span>邮戳装饰</button>
+        <button class="step-tab" type="button" data-panel="placePanel"><span>03</span>旅程地点</button>
+      </nav>
+
+      <section class="tool-panel active" id="templatePanel">
+        <div class="section-heading"><div><h2>选择模板</h2><p>照片与编辑内容会在模板间保留</p></div></div>
+        <div class="template-grid" id="templateGrid">
+          <button class="template-card selected" type="button" data-template="vintage">
+            <span class="mini-card vintage-mini"><i></i><b></b></span><strong>复古旅行</strong><small>旧车票般的旅途纪念</small>
+          </button>
+          <button class="template-card" type="button" data-template="modern">
+            <span class="mini-card modern-mini"><i></i><b></b></span><strong>极简现代</strong><small>干净留白与城市坐标</small>
+          </button>
+          <button class="template-card" type="button" data-template="journal">
+            <span class="mini-card journal-mini"><i></i><b></b></span><strong>手账拼贴</strong><small>胶带、纸片与随手记录</small>
+          </button>
+        </div>
+        <div class="field-group">
+          <label for="photoInput">旅途照片 <span>JPG / PNG / HEIC</span></label>
+          <label class="upload-box" for="photoInput"><span class="upload-icon">＋</span><strong>选择一张照片</strong><small>上传后可在右侧拖动构图</small></label>
+          <input id="photoInput" type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif">
+        </div>
+        <div class="field-group zoom-field">
+          <label for="zoomRange">照片缩放 <output id="zoomOutput">100%</output></label>
+          <input id="zoomRange" type="range" min="1" max="3" value="1" step="0.01" disabled>
+        </div>
+        <div class="field-group">
+          <span class="field-label">照片滤镜</span>
+          <div class="segmented" id="filterButtons">
+            <button class="selected" type="button" data-filter="original">原图</button>
+            <button type="button" data-filter="warm">暖调</button>
+            <button type="button" data-filter="vintage">复古</button>
+            <button type="button" data-filter="mono">黑白</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="messageInput">明信片文字 <span id="messageCount">0 / 36</span></label>
+          <textarea id="messageInput" maxlength="36" rows="2" placeholder="写下一句想留住的话……"></textarea>
+        </div>
+      </section>
+
+      <section class="tool-panel" id="stampPanel">
+        <div class="section-heading"><div><h2>邮戳装饰</h2><p>样式共享，位置由模板安排</p></div></div>
+        <div class="stamp-grid" id="stampGrid">
+          <button class="stamp-choice selected" type="button" data-stamp="air"><span class="stamp-preview round">✦<i>AIR MAIL</i></span><strong>航旅圆章</strong></button>
+          <button class="stamp-choice" type="button" data-stamp="date"><span class="stamp-preview date">26<br><i>AUG</i></span><strong>抵达日期章</strong></button>
+          <button class="stamp-choice" type="button" data-stamp="post"><span class="stamp-preview oval">P · C</span><strong>明信片章</strong></button>
+        </div>
+        <div class="field-group">
+          <label for="stampTextInput">邮戳附加文字 <span id="stampCount">0 / 16</span></label>
+          <input id="stampTextInput" maxlength="16" value="BON VOYAGE" placeholder="例如 BON VOYAGE">
+        </div>
+      </section>
+
+      <section class="tool-panel" id="placePanel">
+        <div class="section-heading"><div><h2>旅程地点</h2><p>无需地图，直接写下目的地</p></div></div>
+        <div class="field-group">
+          <label for="placeInput">地点名称 <span id="placeCount">0 / 20</span></label>
+          <input id="placeInput" maxlength="20" placeholder="例如：大理 · 云南">
+        </div>
+        <div class="place-notice"><span aria-hidden="true">⌖</span><div><strong>完全离线</strong><p>地点仅显示在这张明信片上，不会上传或查询网络。</p></div></div>
+      </section>
+    </aside>
+
+    <section class="workspace" aria-label="明信片画布">
+      <div class="workspace-head"><div><span class="status-dot"></span><span id="templateName">复古旅行</span></div><span id="photoHint">上传照片后可拖动调整</span></div>
+      <div class="canvas-wrap" id="canvasWrap"><canvas id="postcardCanvas" width="1200" height="800" aria-label="明信片实时预览"></canvas></div>
+      <div class="canvas-actions">
+        <button class="secondary-btn" id="resetPhotoBtn" type="button" disabled>重置构图</button>
+        <button class="primary-btn" id="previewBtn" type="button">最终预览 <span>→</span></button>
+      </div>
+      <p class="privacy-note">照片与文字只在你的浏览器中处理，不会离开设备。</p>
+    </section>
+  </main>
+
+  <div class="preview-screen" id="previewScreen" hidden>
+    <header><button class="secondary-btn" id="backToEdit" type="button">← 返回编辑</button><div><p class="eyebrow">YOUR POSTCARD</p><h2>这一程，值得收藏</h2></div><span></span></header>
+    <div class="preview-canvas"><canvas id="finalCanvas" width="1200" height="800"></canvas></div>
+    <div class="preview-actions"><button class="primary-btn" id="publishBtn" type="button">上传到数字照片墙 <span>→</span></button><p>作品仅保存在这台设备的浏览器中，不会上传到网络</p></div>
+  </div>
+
+  <script src="assets/heic2any.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
